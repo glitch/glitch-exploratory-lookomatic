@@ -6,6 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor
 public class RecordPair {
-    private final String key;
-    private final Long value;
+  private final String key;
+  private final Long value;
 }

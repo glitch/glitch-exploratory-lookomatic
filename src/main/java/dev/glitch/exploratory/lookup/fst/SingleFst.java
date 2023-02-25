@@ -22,46 +22,47 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SingleFst implements Lookup {
 
-    private final FST<Long> fst;
-    private final Long numberElements;
+  private final FST<Long> fst;
+  private final Long numberElements;
 
-    public SingleFst(Stream<RecordPair> recordStream) throws IOException {
-        final PositiveIntOutputs outputs = PositiveIntOutputs.getSingleton();
-        final FSTCompiler<Long> compiler = new FSTCompiler<Long>(INPUT_TYPE.BYTE1, outputs);
-        final BytesRefBuilder bytesRefBuilder = new BytesRefBuilder();
-        final IntsRefBuilder intsRefBuilder = new IntsRefBuilder();
-        final AtomicBoolean problem = new AtomicBoolean(false);
-        final AtomicLong counter = new AtomicLong(0L);
-        
-        // Input to FST compiler MUST BE SORTED
-        recordStream.sorted(Comparator.comparing(RecordPair::getKey)).forEach(r -> {
-            bytesRefBuilder.copyChars(r.getKey());;
-            try {
-                compiler.add(Util.toIntsRef(bytesRefBuilder.toBytesRef(), intsRefBuilder), r.getValue());
-            } catch (IOException e) {
-                log.error("Error adding record {} to FSTCompiler, {}", r, e);
-                problem.set(true);
-            }
-            counter.incrementAndGet();
-        });
-        this.numberElements = counter.get();
-    
-        if (problem.get() ){
-            // Throw IOException here because we encountred it during stream processing
-            throw new IOException("Exception encountered during FST construction");
-        }
-        
-        this.fst = compiler.compile();
+  public SingleFst(Stream<RecordPair> recordStream) throws IOException {
+    log.debug("Building single FST");
+    final PositiveIntOutputs outputs = PositiveIntOutputs.getSingleton();
+    final FSTCompiler<Long> compiler = new FSTCompiler<Long>(INPUT_TYPE.BYTE1, outputs);
+    final BytesRefBuilder bytesRefBuilder = new BytesRefBuilder();
+    final IntsRefBuilder intsRefBuilder = new IntsRefBuilder();
+    final AtomicBoolean problem = new AtomicBoolean(false);
+    final AtomicLong counter = new AtomicLong(0L);
+
+    // Input to FST compiler MUST BE SORTED
+    recordStream.sorted(Comparator.comparing(RecordPair::getKey)).forEach(r -> {
+      bytesRefBuilder.copyChars(r.getKey());;
+      try {
+        compiler.add(Util.toIntsRef(bytesRefBuilder.toBytesRef(), intsRefBuilder), r.getValue());
+      } catch (IOException e) {
+        log.error("Error adding record {} to FSTCompiler, {}", r, e);
+        problem.set(true);
+      }
+      counter.incrementAndGet();
+    });
+    this.numberElements = counter.get();
+
+    if (problem.get()) {
+      // Throw IOException here because we encountred it during stream processing
+      throw new IOException("Exception encountered during FST construction");
     }
 
-    @Override
-    public Long contains(String id) throws IOException {
-        return Util.get(this.fst, new BytesRef(id));
-    }
+    this.fst = compiler.compile();
+  }
 
-    @Override
-    public Long getSize() {
-        return this.numberElements;
-    }
+  @Override
+  public Long contains(String id) throws IOException {
+    return Util.get(this.fst, new BytesRef(id));
+  }
+
+  @Override
+  public Long getSize() {
+    return this.numberElements;
+  }
 
 }
