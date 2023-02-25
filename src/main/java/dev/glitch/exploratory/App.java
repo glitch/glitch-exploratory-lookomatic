@@ -54,7 +54,7 @@ public class App {
     int i = 1;
     for (SingleFst fst : fistList) {
       // System.err.println(i + ", fst.getSize(): " + fst.getSize());
-      log.info("{}, fst.getSize(): ", i, fst.getSize());
+      log.info("{}, fst.getSize(): {}", i, fst.getSize());
       i += 1;
     }
   }
