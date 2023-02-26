@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 
 @Slf4j
-public class App {
+public class CmdLineApp {
 
   @Parameter(names = {"--help"}, description = "Print help message", required = false)
   boolean help = false;
@@ -37,7 +37,7 @@ public class App {
   Long queryLookups = 0L;
 
   public static void main(String[] args) throws Exception {
-    App app = new App();
+    CmdLineApp app = new CmdLineApp();
     JCommander jcmdr = JCommander.newBuilder().programName("App").addObject(app).build();
     jcmdr.parse(args);
 
@@ -69,7 +69,7 @@ public class App {
     });
   }
 
-  public static void streamExample(App app) throws Exception {
+  public static void streamExample(CmdLineApp app) throws Exception {
     List<RecordPair> validation = (app.validatePercent > 0) ? new ArrayList<>() : null;
     Stream<RecordPair> recordStream = getRecordsStream(app.total, validation, app.validatePercent);
     MultiFst multi = new MultiFst(recordStream, app.batch);
@@ -116,7 +116,7 @@ public class App {
    *
    * @param app
    */
-  public static void reactorExample(App app) {
+  public static void reactorExample(CmdLineApp app) {
     List<RecordPair> validation = (app.validatePercent > 0) ? new ArrayList<>() : null;
     Flux<RecordPair> origin = Flux
         .fromStream(getRecordsStream(app.total, validation, app.validatePercent).unordered().parallel());

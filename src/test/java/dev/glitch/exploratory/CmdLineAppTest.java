@@ -13,7 +13,7 @@ import dev.glitch.exploratory.model.RecordPair;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class AppTest {
+public class CmdLineAppTest {
 
   @Test
   public void shouldAnswerWithTrue() {

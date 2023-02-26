@@ -161,7 +161,7 @@
               <archive>
                 <manifest>
                   <mainClass>
-                    dev.glitch.exploratory.App
+                    dev.glitch.exploratory.CmdLineApp
                   </mainClass>
                 </manifest>
               </archive>
