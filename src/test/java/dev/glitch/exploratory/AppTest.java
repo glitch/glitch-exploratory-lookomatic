@@ -1,23 +1,16 @@
 package dev.glitch.exploratory;
 
-import java.io.IOException;
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import dev.glitch.exploratory.lookup.fst.SingleFst;
 import dev.glitch.exploratory.model.RecordPair;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
 
 @Slf4j
 public class AppTest {
@@ -66,8 +59,8 @@ public class AppTest {
      *
      * List<SingleFst> fistList = listFlux.stream().unordered().parallel().map(flux
      * -> { Stream<RecordPair> pairStream = flux.toStream(); try { return new
-     * SingleFst(pairStream); } catch (IOException e) { // TODO Auto-generated catch
-     * block e.printStackTrace(); } return null; }).collect(Collectors.toList());
+     * SingleFst(pairStream); } catch (IOException e) { block e.printStackTrace(); }
+     * return null; }).collect(Collectors.toList());
      *
      * int i = 1; for (SingleFst fst : fistList) { System.err.println(i +
      * ", fst.getSize(): " + fst.getSize()); i += 1; }

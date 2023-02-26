@@ -1,10 +1,10 @@
 package dev.glitch.exploratory.lookup.fst;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import dev.glitch.exploratory.lookup.Lookup;
@@ -15,38 +15,44 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MultiFst implements Lookup {
 
-  private final List<SingleFst> multi = new ArrayList<>();
+  private final List<SingleFst> multi;
   private final Integer batchSize;
 
-  public MultiFst(Stream<RecordPair> recordStream, Integer batchSize) {
+  public MultiFst(Stream<RecordPair> recordStream, Integer batchSize) throws IOException {
     this.batchSize = batchSize;
     final AtomicInteger counter = new AtomicInteger(1);
-    final AtomicBoolean problems = new AtomicBoolean(false);
-    // io.vavr.collection.Stream.ofAll(recordStream).grouped(batchSize).forEach(batch
-    // -> {
-    // SingleFst single = new SingleFst(batch);
-    // });
+    final AtomicBoolean problem = new AtomicBoolean(false);
 
-    BatchingIterator.batchedStreamOf(recordStream, this.batchSize).forEach(batch -> {
+    this.multi = BatchingIterator.batchedStreamOf(recordStream, this.batchSize).map(batch -> {
       log.info("Working on batch {}", counter.getAndIncrement());
       try {
-        SingleFst single = new SingleFst(batch.stream());
+        return new SingleFst(batch.stream());
       } catch (IOException e) {
-        log.error("");
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        log.error("Exception building single fst, {}", e);
+        problem.set(true);
       }
-    });;
+      return null;
+    }).collect(Collectors.toList());
+
+    if (problem.get()) {
+      throw new IOException("Encounterd an exception building the FSTs");
+    }
   }
 
   @Override
   public Long contains(String id) {
-    throw new UnsupportedOperationException("Unimplemented method 'contains'");
+    return this.multi.parallelStream().map(fst -> {
+      try {
+        return fst.contains(id);
+      } catch (IOException e) {
+      }
+      return -1L;
+    }).filter(r -> r > -1L).findAny().orElse(-1L);
   }
 
   @Override
   public Long getSize() {
-    throw new UnsupportedOperationException("Unimplemented method 'getSize'");
+    return this.multi.stream().mapToLong(fst -> fst.getSize()).sum();
   }
 
 }

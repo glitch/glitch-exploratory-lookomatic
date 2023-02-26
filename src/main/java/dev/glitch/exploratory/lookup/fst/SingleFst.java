@@ -2,6 +2,7 @@ package dev.glitch.exploratory.lookup.fst;
 
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
@@ -57,7 +58,7 @@ public class SingleFst implements Lookup {
 
   @Override
   public Long contains(String id) throws IOException {
-    return Util.get(this.fst, new BytesRef(id));
+    return Optional.ofNullable(Util.get(this.fst, new BytesRef(id))).orElse(-1L);
   }
 
   @Override

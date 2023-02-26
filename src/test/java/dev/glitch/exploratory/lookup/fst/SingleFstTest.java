@@ -30,7 +30,7 @@ public class SingleFstTest {
 
     // Test strings which should NOT be in the FST
     for (String nope : List.of("I shouldn't", "be here", "today")) {
-      Assertions.assertNull(uut.contains(nope));
+      Assertions.assertEquals(-1L, uut.contains(nope));
     }
   }
 
