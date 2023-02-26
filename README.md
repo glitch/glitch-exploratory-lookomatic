@@ -3,6 +3,7 @@
 ## Brief developer notes
 - `mvn formatter:format` will run the code formatter
 - `mvn clean package` will build jar & jar-with-dependencies
+- `mvn clean package spring-boot:repackage` will build the above plus a -springboot.jar pointing to alt main class
 
 ### Example run of the app
 ```
