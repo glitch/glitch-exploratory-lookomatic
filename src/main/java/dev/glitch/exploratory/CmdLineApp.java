@@ -3,8 +3,6 @@ package dev.glitch.exploratory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -14,6 +12,7 @@ import com.beust.jcommander.Parameter;
 import dev.glitch.exploratory.lookup.fst.MultiFst;
 import dev.glitch.exploratory.lookup.fst.SingleFst;
 import dev.glitch.exploratory.model.RecordPair;
+import dev.glitch.exploratory.util.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 
@@ -50,28 +49,9 @@ public class CmdLineApp {
     streamExample(app);
   }
 
-  /**
-   * Create a Stream of randomly generated RecordPair objects
-   *
-   * @param nElems
-   *          Number of elements in the stream
-   * @return Stream of RecordPair objects
-   */
-  public static Stream<RecordPair> getRecordsStream(Long nElems, List<RecordPair> validation, Integer validatePercent) {
-    final Random random = new Random();
-    final Random sampler = new Random();
-    return new Random().ints(nElems).mapToObj(rando -> {
-      return new RecordPair(UUID.randomUUID().toString(), Long.valueOf(random.nextInt(7)));
-    }).peek(r -> {
-      if (null != validation && validatePercent > 0 && sampler.nextInt(99) + 1 <= validatePercent) {
-        validation.add(r);
-      }
-    });
-  }
-
   public static void streamExample(CmdLineApp app) throws Exception {
     List<RecordPair> validation = (app.validatePercent > 0) ? new ArrayList<>() : null;
-    Stream<RecordPair> recordStream = getRecordsStream(app.total, validation, app.validatePercent);
+    Stream<RecordPair> recordStream = CommonUtil.getRecordsStream(app.total, validation, app.validatePercent);
     MultiFst multi = new MultiFst(recordStream, app.batch);
     if (null != validation) {
       log.info("Running validation for {} records", validation.size());
@@ -97,7 +77,7 @@ public class CmdLineApp {
     if (app.queryLookups > 0) {
       log.info("Running query throughput test");
       long startWatch = System.currentTimeMillis();
-      getRecordsStream(app.queryLookups, null, 0).unordered().parallel().forEach(r -> {
+      CommonUtil.getRecordsStream(app.queryLookups, null, 0).unordered().parallel().forEach(r -> {
         multi.contains(r.getKey());
       });
       long ellapsed = (System.currentTimeMillis() - startWatch) / 1000;
@@ -119,7 +99,7 @@ public class CmdLineApp {
   public static void reactorExample(CmdLineApp app) {
     List<RecordPair> validation = (app.validatePercent > 0) ? new ArrayList<>() : null;
     Flux<RecordPair> origin = Flux
-        .fromStream(getRecordsStream(app.total, validation, app.validatePercent).unordered().parallel());
+        .fromStream(CommonUtil.getRecordsStream(app.total, validation, app.validatePercent).unordered().parallel());
     List<Flux<RecordPair>> listFlux = origin.window(app.batch).collectList().block();
 
     List<SingleFst> fistList = listFlux.stream().unordered().parallel().map(flux -> {
