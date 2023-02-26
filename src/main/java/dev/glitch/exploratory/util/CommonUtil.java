@@ -9,7 +9,7 @@ import dev.glitch.exploratory.model.RecordPair;
 
 public class CommonUtil {
 
-    /**
+  /**
    * Create a Stream of randomly generated RecordPair objects
    *
    * @param nElems

@@ -17,13 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @Slf4j
 public class LookupConfig {
-    
-    @Bean(value = "fst")
-    public Lookup getLookup() throws IOException {
-        List<RecordPair> validation = new ArrayList<>();
-        Stream<RecordPair> pairStream = CommonUtil.getRecordsStream(10000L, validation, 10);
-        MultiFst multi = new MultiFst(pairStream, 10000);
-        log.info("{}", validation);
-        return multi;
-    }
+
+  @Bean(value = "fst")
+  public Lookup getLookup() throws IOException {
+    List<RecordPair> validation = new ArrayList<>();
+    Stream<RecordPair> pairStream = CommonUtil.getRecordsStream(10000L, validation, 10);
+    MultiFst multi = new MultiFst(pairStream, 10000);
+    log.debug("{}", validation);
+    return multi;
+  }
 }

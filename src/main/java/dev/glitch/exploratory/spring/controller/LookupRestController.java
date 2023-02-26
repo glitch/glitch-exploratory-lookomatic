@@ -19,9 +19,9 @@ public class LookupRestController {
   @GetMapping("/{id}")
   public Long lookupId(@Parameter(required = true, name = "id") @PathVariable("id") String id) {
     try {
-        return this.lookup.contains(id);
+      return this.lookup.contains(id);
     } catch (Exception e) {
-        return -1L;
+      return -1L;
     }
   }
 
