@@ -25,6 +25,7 @@ import dev.glitch.exploratory.spring.config.LookupConfig.Properties;
 import dev.glitch.exploratory.util.LookupFactory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/lookup")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Lookup API", description = "Simple Id Lookup Service using Lucene FST & Coming soon BloomFilter + File-based, (K,V) pairs")
 public class LookupRestController implements InitializingBean {
 
   private final LookupConfig lookupConfig;
@@ -50,6 +52,7 @@ public class LookupRestController implements InitializingBean {
     this.lookupProps.set(props);
   }
 
+  @Operation(description = "Look up the provided id in the current Lookup instance")
   @GetMapping("/{id}")
   public Long lookupId(
       @Parameter(required = true, name = "id", description = "Id to lookup") @PathVariable("id") String id) {
@@ -60,6 +63,7 @@ public class LookupRestController implements InitializingBean {
     }
   }
 
+  @Operation(description = "Create a new Lookup instance from a set of pre-configured properties")
   @GetMapping("/createLookup/{lookupSize}")
   public ResponseEntity<String> createLookup(
       @Parameter(required = true, name = "lookupSize", description = "One of <default | small | medium | large>", example = "small") @PathVariable("lookupSize") String lookupSize)
@@ -80,13 +84,13 @@ public class LookupRestController implements InitializingBean {
     }
   }
 
+  @Operation(description = "Get Info and Data Samples from the currently active Lookup")
   @GetMapping("/info")
-  @Operation(description = "List information with sample on the currently active Lookup")
   public ResponseEntity<String> getInfo() throws JsonProcessingException {
     return ResponseEntity.ok().body(mapper.writeValueAsString(this.lookupProps.get()));
   }
 
-  @ResponseStatus(code = HttpStatus.NOT_FOUND)
+  @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "No configuration exists for the Lookup you are trying to create")
   public static class LookupConfigNotFound extends Exception {
     public LookupConfigNotFound(String message) {
       super(message);
