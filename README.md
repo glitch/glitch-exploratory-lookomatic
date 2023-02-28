@@ -1,6 +1,9 @@
 # Fun with FSTs, Bloomfilters, Oh My!
+- Playground for learning how to use Lucene's FST components as a pseudo Map / Id-Lookup service.
+- _Coming Soon_ that same type of service using Bloom filters (Guava lib) backed by compressed, Sorted (K,V) File (probably Accumulo or HBase)
 
 ## Brief developer notes
+### Build
 - `mvn formatter:format` will run the code formatter
 - `mvn clean package` will build jar & jar-with-dependencies
 - `mvn clean package spring-boot:repackage` will build the above plus a -springboot.jar pointing to alt main class
