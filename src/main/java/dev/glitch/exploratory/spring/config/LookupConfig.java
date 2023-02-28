@@ -1,29 +1,31 @@
 package dev.glitch.exploratory.spring.config;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Map;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
-import dev.glitch.exploratory.lookup.Lookup;
-import dev.glitch.exploratory.lookup.fst.MultiFst;
 import dev.glitch.exploratory.model.RecordPair;
-import dev.glitch.exploratory.util.CommonUtil;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Data;
 
-@Configuration
-@Slf4j
+@Component
+@ConfigurationProperties(prefix = "lookup")
+@Data
 public class LookupConfig {
 
-  @Bean(value = "fst")
-  public Lookup getLookup() throws IOException {
-    List<RecordPair> validation = new ArrayList<>();
-    Stream<RecordPair> pairStream = CommonUtil.getRecordsStream(10000L, validation, 10);
-    MultiFst multi = new MultiFst(pairStream, 10000);
-    log.debug("{}", validation);
-    return multi;
+  @Value("${default:smal}")
+  private String defaultLookup;
+
+  private Map<String, Properties> lookups;
+
+  @Data
+  public static class Properties {
+    private String lookupType;
+    private Integer batchSize;
+    private Long nElems;
+    private List<RecordPair> samples = new ArrayList<>();
   }
 }

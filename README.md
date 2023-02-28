@@ -16,3 +16,21 @@ mvn clean package spring-boot:repackage
 java -Dlogging.config=logback.xml -Dspring.profiles.active=local -jar target/lookup-o-matic-0.0.1-SNAPSHOT-springboot.jar
 ```
 Then point your browser at `http://localhost:8080/swagger-ui/index.html`
+
+### Example VSCode launch.json
+```
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Debug",
+      "request": "launch",
+      "mainClass": "dev.glitch.exploratory.spring.SpringBootApp",
+      "projectName": "lookup-o-matic",
+      "args": "",
+      "vmArgs": "-Dspring.profiles.active=local,swagger"
+    }
+  ]
+}
+```

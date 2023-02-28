@@ -1,6 +1,27 @@
 server:
   port: 8080
 
+lookup:
+  lookups:
+    default:
+      lookupType: "fst"
+      batchSize: 50_000
+      nElems: 100_000
+    small:
+      lookupType: "fst"
+      batchSize: 50_000
+      nElems: 100_000
+    medium:
+      lookupType: "fst"
+      batchSize: 500_000
+      nElems:
+        1_000_000
+    large:
+      lookupType: "fst"
+      batchSize: 1_000_000
+      nElems:
+        5_000_000
+
 # logging:
 #   level:
 #     dev:
