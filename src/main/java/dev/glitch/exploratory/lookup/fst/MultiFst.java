@@ -40,14 +40,14 @@ public class MultiFst implements Lookup {
   }
 
   @Override
-  public Long contains(String id) {
+  public String contains(String id) {
     return this.multi.parallelStream().map(fst -> {
       try {
         return fst.contains(id);
       } catch (IOException e) {
       }
-      return -1L;
-    }).filter(r -> r > -1L).findAny().orElse(-1L);
+      return "";
+    }).filter(r -> r.isEmpty()).findAny().orElse("");
   }
 
   @Override

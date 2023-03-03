@@ -56,14 +56,14 @@ public class CmdLineApp {
     if (null != validation) {
       log.info("Running validation for {} records", validation.size());
       for (RecordPair pair : validation) {
-        if (multi.contains(pair.getKey()) == -1L) {
+        if (multi.contains(pair.getKey()).isEmpty()) {
           log.error("Missed record {}", pair.getKey());
           throw new Exception("FST is broken :(");
         }
       }
 
       for (String id : List.of("one-id", "two-id", "3987", "shouldn't find me")) {
-        if (-1L != multi.contains(id)) {
+        if (!multi.contains(id).isEmpty()) {
           log.error("Found an FST which should NOT exist", id);
           throw new Exception("FST is broken :(");
         }

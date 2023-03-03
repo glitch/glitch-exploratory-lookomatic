@@ -9,7 +9,10 @@ import java.util.stream.Stream;
 
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.BytesRefBuilder;
+import org.apache.lucene.util.CharsRef;
+import org.apache.lucene.util.CharsRefBuilder;
 import org.apache.lucene.util.IntsRefBuilder;
+import org.apache.lucene.util.fst.CharSequenceOutputs;
 import org.apache.lucene.util.fst.FST;
 import org.apache.lucene.util.fst.FST.INPUT_TYPE;
 import org.apache.lucene.util.fst.FSTCompiler;
@@ -18,18 +21,24 @@ import org.apache.lucene.util.fst.Util;
 
 import dev.glitch.exploratory.lookup.Lookup;
 import dev.glitch.exploratory.model.RecordPair;
+import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SingleFst implements Lookup {
 
-  private final FST<Long> fst;
+  // private final FST<Long> fst;
+  private final FST<CharsRef> fst;
   private final Long numberElements;
 
   public SingleFst(Stream<RecordPair> recordStream) throws IOException {
     log.debug("Building single FST");
-    final PositiveIntOutputs outputs = PositiveIntOutputs.getSingleton();
-    final FSTCompiler<Long> compiler = new FSTCompiler<Long>(INPUT_TYPE.BYTE1, outputs);
+    // final PositiveIntOutputs outputs = PositiveIntOutputs.getSingleton();
+    // final FSTCompiler<Long> compiler = new FSTCompiler<Long>(INPUT_TYPE.BYTE1,
+    // outputs);
+    final CharSequenceOutputs outputs = CharSequenceOutputs.getSingleton();
+    final CharsRefBuilder charsRefBuilder = new CharsRefBuilder();
+    final FSTCompiler<CharsRef> compiler = new FSTCompiler<>(INPUT_TYPE.BYTE1, outputs);
     final BytesRefBuilder bytesRefBuilder = new BytesRefBuilder();
     final IntsRefBuilder intsRefBuilder = new IntsRefBuilder();
     final AtomicBoolean problem = new AtomicBoolean(false);
@@ -37,9 +46,14 @@ public class SingleFst implements Lookup {
 
     // Input to FST compiler MUST BE SORTED
     recordStream.sorted(Comparator.comparing(RecordPair::getKey)).forEach(r -> {
-      bytesRefBuilder.copyChars(r.getKey());;
       try {
-        compiler.add(Util.toIntsRef(bytesRefBuilder.toBytesRef(), intsRefBuilder), r.getValue());
+        // compiler.add(Util.toIntsRef(bytesRefBuilder.toBytesRef(), intsRefBuilder),
+        // r.getValue());
+        charsRefBuilder.clear();
+        bytesRefBuilder.clear();
+        bytesRefBuilder.copyChars(r.getKey());
+        charsRefBuilder.append(r.getValue());
+        compiler.add(Util.toIntsRef(bytesRefBuilder.toBytesRef(), intsRefBuilder), charsRefBuilder.toCharsRef());
       } catch (IOException e) {
         log.error("Error adding record {} to FSTCompiler, {}", r, e);
         problem.set(true);
@@ -57,8 +71,9 @@ public class SingleFst implements Lookup {
   }
 
   @Override
-  public Long contains(String id) throws IOException {
-    return Optional.ofNullable(Util.get(this.fst, new BytesRef(id))).orElse(-1L);
+  public String contains(String id) throws IOException {
+    CharsRef val = (Util.get(this.fst, new BytesRef(id)));
+    return (null == val) ? "" : val.toString();
   }
 
   @Override

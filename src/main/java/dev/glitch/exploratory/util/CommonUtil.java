@@ -24,7 +24,7 @@ public class CommonUtil {
     final Random random = new Random();
     final Random sampler = new Random();
     return new Random().ints(nElems).mapToObj(rando -> {
-      return new RecordPair(UUID.randomUUID().toString(), Long.valueOf(random.nextInt(7)));
+      return new RecordPair(UUID.randomUUID().toString(), String.valueOf(random.nextInt(7)));
     }).peek(r -> {
       if (null != validation && validatePercent > 0 && sampler.nextInt(99) + 1 <= validatePercent) {
         validation.add(r);
@@ -45,11 +45,10 @@ public class CommonUtil {
     final AtomicLong counter = new AtomicLong(0L);
     final List<RecordPair> samples = new ArrayList<>();
     Stream<RecordPair> pairStream = new Random().ints(nElems).mapToObj(rando -> {
-      return new RecordPair(UUID.randomUUID().toString(), Long.valueOf(random.nextInt(7)));
+      return new RecordPair(UUID.randomUUID().toString(), String.valueOf(random.nextInt(7)));
     }).peek(r -> {
       if (counter.getAndIncrement() < 10L) {
         samples.add(r);
-
       }
     });
     return Pair.of(pairStream, samples);

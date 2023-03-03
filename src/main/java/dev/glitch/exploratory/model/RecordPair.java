@@ -7,5 +7,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RecordPair {
   private final String key;
-  private final Long value;
+  private final String value;
 }

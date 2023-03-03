@@ -21,8 +21,8 @@ public class SingleFstTest {
     SingleFst uut = new SingleFst(input.stream());
 
     for (RecordPair expected : input) {
-      Long actual = uut.contains(expected.getKey());
-      Assertions.assertEquals(expected.getValue().longValue(), actual.longValue());
+      String actual = uut.contains(expected.getKey());
+      Assertions.assertEquals(expected.getValue(), actual);
     }
 
     // Test that we persisted the count
@@ -30,14 +30,14 @@ public class SingleFstTest {
 
     // Test strings which should NOT be in the FST
     for (String nope : List.of("I shouldn't", "be here", "today")) {
-      Assertions.assertEquals(-1L, uut.contains(nope));
+      Assertions.assertEquals("", uut.contains(nope));
     }
   }
 
   public static Stream<RecordPair> getRecordsStream(int nElems) {
     final Random random = new Random();
     return new Random().ints(nElems).mapToObj(rando -> {
-      return new RecordPair(UUID.randomUUID().toString(), Long.valueOf(random.nextInt(7)));
+      return new RecordPair(UUID.randomUUID().toString(), String.valueOf(random.nextInt(7)));
     });
   }
 }

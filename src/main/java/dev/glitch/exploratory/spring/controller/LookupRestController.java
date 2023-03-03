@@ -54,12 +54,12 @@ public class LookupRestController implements InitializingBean {
 
   @Operation(description = "Look up the provided id in the current Lookup instance")
   @GetMapping("/{id}")
-  public Long lookupId(
+  public String lookupId(
       @Parameter(required = true, name = "id", description = "Id to lookup") @PathVariable("id") String id) {
     try {
       return this.lookup.get().contains(id);
     } catch (Exception e) {
-      return -1L;
+      return "";
     }
   }
 
