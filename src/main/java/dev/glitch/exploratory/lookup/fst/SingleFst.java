@@ -2,7 +2,6 @@ package dev.glitch.exploratory.lookup.fst;
 
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
@@ -16,12 +15,10 @@ import org.apache.lucene.util.fst.CharSequenceOutputs;
 import org.apache.lucene.util.fst.FST;
 import org.apache.lucene.util.fst.FST.INPUT_TYPE;
 import org.apache.lucene.util.fst.FSTCompiler;
-import org.apache.lucene.util.fst.PositiveIntOutputs;
 import org.apache.lucene.util.fst.Util;
 
 import dev.glitch.exploratory.lookup.Lookup;
 import dev.glitch.exploratory.model.RecordPair;
-import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
