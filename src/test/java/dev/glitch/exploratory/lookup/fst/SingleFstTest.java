@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import dev.glitch.exploratory.lookup.testutils.LookupTestUtil;
 import dev.glitch.exploratory.model.RecordPair;
 
 public class SingleFstTest {
@@ -17,7 +18,7 @@ public class SingleFstTest {
   @Test
   void testFst() throws IOException {
     // Save the stream into a list so we can use it for validation
-    final List<RecordPair> input = getRecordsStream(10).collect(Collectors.toList());
+    final List<RecordPair> input = LookupTestUtil.getRecordsStream(10).collect(Collectors.toList());
     SingleFst uut = new SingleFst(input.stream());
 
     for (RecordPair expected : input) {
@@ -32,12 +33,5 @@ public class SingleFstTest {
     for (String nope : List.of("I shouldn't", "be here", "today")) {
       Assertions.assertEquals("", uut.contains(nope));
     }
-  }
-
-  public static Stream<RecordPair> getRecordsStream(int nElems) {
-    final Random random = new Random();
-    return new Random().ints(nElems).mapToObj(rando -> {
-      return new RecordPair(UUID.randomUUID().toString(), String.valueOf(random.nextInt(7)));
-    });
   }
 }
