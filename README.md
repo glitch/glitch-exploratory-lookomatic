@@ -12,6 +12,19 @@
 ```
 java -Xmx6G -Dlogback.configurationFile=logback.xml -jar target/lookup-o-matic-0.0.1-SNAPSHOT-jar-with-dependencies.jar --total 100000 --batch 50000 --validatePercent 50 --query 1000000
 ```
+#### Chronicle-Map additional args
+You may need to add these args to the java command line args for Chronicle-Map
+```
+--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED
+--add-exports=java.base/sun.nio.ch=ALL-UNNAMED
+--add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+--add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED
+--add-opens=java.base/java.lang=ALL-UNNAMED
+--add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+--add-opens=java.base/java.io=ALL-UNNAMED
+--add-opens=java.base/java.util=ALL-UNNAMED
+```
 
 ### Example Spring Boot run
 ```
@@ -32,8 +45,38 @@ Then point your browser at `http://localhost:8080/swagger-ui/index.html`
       "mainClass": "dev.glitch.exploratory.spring.SpringBootApp",
       "projectName": "lookup-o-matic",
       "args": "",
-      "vmArgs": "-Dspring.profiles.active=local,swagger"
+      "vmArgs": [
+        "-Dspring.profiles.active=local,swagger",
+        "-Dlogback.configurationFile=logback.xml",
+        "--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED",
+        "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED",
+        "--add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+        "--add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
+        "--add-opens=java.base/java.io=ALL-UNNAMED",
+        "--add-opens=java.base/java.util=ALL-UNNAMED"
+      ]
     }
   ]
 }
+```
+#### For Chronicle & VSCode
+Add this to .vscode/settings.json to run unit tests from testing widget
+```
+      "java.test.config": {
+        "vmArgs": [
+            "-Dlogback.configurationFile=logback.xml",
+            "--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED",
+            "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED",
+            "--add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+            "--add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED",
+            "--add-opens=java.base/java.lang=ALL-UNNAMED",
+            "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
+            "--add-opens=java.base/java.io=ALL-UNNAMED",
+            "--add-opens=java.base/java.util=ALL-UNNAMED"
+        ]
+      }
 ```
