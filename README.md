@@ -2,6 +2,12 @@
 - Playground for learning how to use Lucene's FST components as a pseudo Map / Id-Lookup service.
 - _Coming Soon_ that same type of service using Bloom filters (Guava lib) backed by compressed, Sorted (K,V) File (probably Accumulo or HBase)
 
+## The tech
+- Lucene FST https://lucene.apache.org/core/9_5_0/core/org/apache/lucene/util/fst/package-summary.html
+- ChronicleMap https://github.com/OpenHFT/Chronicle-Map
+- Accumulo https://accumulo.apache.org/
+- Guava BloomFilter https://github.com/google/guava/blob/master/guava/src/com/google/common/hash/BloomFilter.java
+
 ## Brief developer notes
 ### Build
 - `mvn formatter:format` will run the code formatter
