@@ -2,11 +2,7 @@ package dev.glitch.exploratory.lookup.fst;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
