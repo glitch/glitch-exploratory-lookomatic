@@ -47,7 +47,7 @@ public class MultiFst implements Lookup {
       } catch (IOException e) {
       }
       return "";
-    }).filter(r -> r.isEmpty()).findAny().orElse("");
+    }).filter(r -> !r.isEmpty()).findAny().orElse("");
   }
 
   @Override
